@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.4</version>
+    <template_groups>
+        <template_group>
+            <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
+            <name>Templates</name>
+        </template_group>
+    </template_groups>
+    <templates>
+        <template>
+            <uuid>4a177f40b1e2499fb3f856d52cb92101</uuid>
+            <template>RouterOS 7 BGP</template>
+            <name>RouterOS 7 BGP</name>
+            <description>Template for discovering and monitoring bgp peers</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>4a529666eb3e48779d0fe74f4f083b46</uuid>
+                    <name>BGP peers discovery</name>
+                    <type>EXTERNAL</type>
+                    <key>ros7_bgp_zabbix.py[discover, {HOST.IP}, {$USERNAME}, {$PASSWORD}]</key>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>f2c1b6c160674c868d4e8eafc1ea5aea</uuid>
+                            <name>BGP Peer {#BGPPEER}</name>
+                            <type>EXTERNAL</type>
+                            <key>ros7_bgp_zabbix.py[status, {HOST.IP},  {$USERNAME}, {$PASSWORD}, -p, {#BGPPEER}]</key>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>313392c72f1146c2b8965ab696e0c6c5</uuid>
+                                    <expression>last(/RouterOS 7 BGP/ros7_bgp_zabbix.py[status, {HOST.IP},  {$USERNAME}, {$PASSWORD}, -p, {#BGPPEER}])=0</expression>
+                                    <name>BGP session {#BGPPEER} on host {HOST.NAME} is down</name>
+                                    <priority>HIGH</priority>
+                                    <description>BGP session is down</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>3e959cd9e33e43f882c4a490503aea4a</uuid>
+                            <name>{#BGPPEER} BGP peer graph</name>
+                            <graph_items>
+                                <graph_item>
+                                    <drawtype>FILLED_REGION</drawtype>
+                                    <color>1A7C11</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>RouterOS 7 BGP</host>
+                                        <key>ros7_bgp_zabbix.py[status, {HOST.IP},  {$USERNAME}, {$PASSWORD}, -p, {#BGPPEER}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+</zabbix_export>

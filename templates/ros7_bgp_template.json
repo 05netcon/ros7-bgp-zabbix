@@ -1,0 +1,66 @@
+{
+    "zabbix_export": {
+        "version": "6.4",
+        "template_groups": [
+            {
+                "uuid": "7df96b18c230490a9a0a9e2307226338",
+                "name": "Templates"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "4a177f40b1e2499fb3f856d52cb92101",
+                "template": "RouterOS 7 BGP",
+                "name": "RouterOS 7 BGP",
+                "description": "Template for discovering and monitoring bgp peers",
+                "groups": [
+                    {
+                        "name": "Templates"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "4a529666eb3e48779d0fe74f4f083b46",
+                        "name": "BGP peers discovery",
+                        "type": "EXTERNAL",
+                        "key": "ros7_bgp_zabbix.py[discover, {HOST.IP}, {$USERNAME}, {$PASSWORD}]",
+                        "item_prototypes": [
+                            {
+                                "uuid": "f2c1b6c160674c868d4e8eafc1ea5aea",
+                                "name": "BGP Peer {#BGPPEER}",
+                                "type": "EXTERNAL",
+                                "key": "ros7_bgp_zabbix.py[status, {HOST.IP},  {$USERNAME}, {$PASSWORD}, -p, {#BGPPEER}]",
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "313392c72f1146c2b8965ab696e0c6c5",
+                                        "expression": "last(/RouterOS 7 BGP/ros7_bgp_zabbix.py[status, {HOST.IP},  {$USERNAME}, {$PASSWORD}, -p, {#BGPPEER}])=0",
+                                        "name": "BGP session {#BGPPEER} on host {HOST.NAME} is down",
+                                        "priority": "HIGH",
+                                        "description": "BGP session is down"
+                                    }
+                                ]
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "3e959cd9e33e43f882c4a490503aea4a",
+                                "name": "{#BGPPEER} BGP peer graph",
+                                "graph_items": [
+                                    {
+                                        "drawtype": "FILLED_REGION",
+                                        "color": "1A7C11",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "RouterOS 7 BGP",
+                                            "key": "ros7_bgp_zabbix.py[status, {HOST.IP},  {$USERNAME}, {$PASSWORD}, -p, {#BGPPEER}]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
